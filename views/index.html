@@ -39,21 +39,35 @@
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>
-    <script>
-      $(function() {
-        $('#convertForm').submit(function(event) {
-          event.preventDefault();
-          $.ajax({
-            url: '/api/convert',
-            type: 'get',
-            data: $('#convertForm').serialize(),
-            success: function(data) {
-              $('#result').text(data.string || data);
-              $('#jsonResult').text(JSON.stringify(data));
-            }
-          });
-        });
-      });
-   </script>
+            <script>
+              $(function() {
+                  $('#convertForm').submit(function(event) {
+                      event.preventDefault(); // Prevent the default form submission
+          
+                      $.ajax({
+                          url: '/api/convert',  // API endpoint
+                          type: 'get',
+                          data: $('#convertForm').serialize(),  // Serialize form data
+                          success: function(data) {
+                              // If success, display both human-readable string and JSON object
+                              $('#result').html(`
+                                  <p>${data.string || 'Conversion result not available'}</p>
+                                  <pre>${JSON.stringify(data, null, 2)}</pre>
+                              `);
+                          },
+                          error: function(xhr) {
+                              const errorMessage = xhr.responseText;
+          
+                              // Format the error as a plain string followed by JSON-like output
+                              $('#result').html(`
+                                  <p>${errorMessage}</p>
+                                  <code> "${errorMessage}" </code>
+                              `);
+                          }
+                      });
+                  });
+              });
+          </script>
+          
   </body>
 </html>
